@@ -1,6 +1,6 @@
 /*
  * json-to-less
- * https://github.com/lbilogurova/json-to-less
+ * https://github.com/blunsh/json-to-less
  *
  * Copyright (c) 2016 Liubov Bilogurova
  * Licensed under the MIT license.
@@ -9,40 +9,57 @@
 'use strict';
 
 module.exports = function(grunt) {
-  
+
 
   grunt.registerMultiTask('json_to_less', 'Compile your json files into less file', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
 
     // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.map(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
+
+    // exclude nonexisting files
+    this.files.map(function (fileGroup) {
+        return {
+            src: fileGroup.src.filter(function (fileSrc) {
+                if (!grunt.file.exists(fileSrc)) {
+                    grunt.log.warn('Source file "' + fileSrc + '" not found.');
+                    return false;
+                } else {
+                    return true;
+                }
+            }),
+            dest: fileGroup.dest
         }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
+    })
 
-      // Handle options.
-      src += options.punctuation;
+    // get data from json files
+    .map(function (fileGroup) {
+        return {
+            destData: fileGroup.src.map(function (path) {
+                return parseJSONFile(path, grunt.file.read(path))
+            }).join('\n'),
+            destFile: fileGroup.dest
+        };
+    })
 
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+    // write data to destination files
+    .forEach(function (fileGroup) {
+        
+        // Write the destination file.
+        grunt.file.write(fileGroup.destFile, fileGroup.destData);
+        
+        // Print a success message.
+        grunt.log.writeln('File "' + fileGroup.destFile + '" created.');
     });
-  });
 
+};
+
+
+function parseJSONFile(path, dataString) {
+    var json = JSON.parse(dataString),
+        lines = [];
+
+    for (var property in json){
+        lines.push('@' + property + ': ' + json[property] + ';');
+    }
+
+    return lines.join('\n');
 };

@@ -2,22 +2,22 @@
   "name": "json-to-less",
   "description": "Compile your json files into less files",
   "version": "0.1.0",
-  "homepage": "https://github.com/lbilogurova/json-to-less",
+  "homepage": "https://github.com/blunsh/json-to-less",
   "author": {
     "name": "Liubov Bilogurova",
     "email": "bilogurova.liubov@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/lbilogurova/json-to-less.git"
+    "url": "git://github.com/blunsh/json-to-less.git"
   },
   "bugs": {
-    "url": "https://github.com/lbilogurova/json-to-less/issues"
+    "url": "https://github.com/blunsh/json-to-less/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/lbilogurova/json-to-less/blob/master/LICENSE-MIT"
+      "url": "https://github.com/blunsh/json-to-less/blob/master/LICENSE-MIT"
     }
   ],
   "engines": {
